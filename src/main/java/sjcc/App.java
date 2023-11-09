@@ -1,7 +1,8 @@
 package sjcc;
 
 /**
- * Hello world!
+ * Venus H. 
+ * For CIS 54 - Data Structure
  *
  */
 public class App 
