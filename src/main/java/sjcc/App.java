@@ -11,6 +11,14 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
+//import javax.json.JSON;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.*;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
 
 public class App 
 {
@@ -23,15 +31,29 @@ public class App
         commandStack = new Stack<>();
         undoStack = new Stack<>();
         commandList = new ArrayList<>();
-        
+        loadCommands("/Users/queen/2023MavenProject/commander/src/main/java/commands.json");
 
     }
 
+    private void loadCommands(String jsonFilePath) {
+        try (InputStream fis = new FileInputStream(jsonFilePath);
+            JsonReader reader = Json.createReader(fis)) {
+            JsonObject obj = reader.readObject();
+            JsonArray commandsJsonArray = obj.getJsonArray("commands");
+            for (int i = 0; i < commandsJsonArray.size(); i++) {
+                commandList.add(commandsJsonArray.getString(i));
+            }
+        }
+        catch (Exception e) {
+            System.err.println("Error loading ..... " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     public void start() {
         Scanner userInput = new Scanner(System.in);
         String input = "";
         System.out.println("Hello, welcome to Venus' Company");
-        while (!input.equals(q)) {
+        while (!input.equals("q")) {
             System.out.println("\n Menu");
             System.out.println("[I]ssue a random command");
             System.out.println("[L]ist all of the commands");
