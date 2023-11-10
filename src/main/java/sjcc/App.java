@@ -11,11 +11,6 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-// import org.json.simple.JSONArray;
-// import org.json.simple.parser.JSONParser;
-// import java.io.FileNotFoundException;
-// import java.io.IOException;
-// import java.util.*;
 
 public class App 
 {
@@ -85,7 +80,7 @@ public class App
             }
         }
         userInput.close();
-        System.out.println("Goodbye, thanks for traing!");
+        System.out.println("Goodbye, thanks for training!");
     }
 
     private void issueCommand() {
