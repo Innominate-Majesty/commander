@@ -67,19 +67,57 @@ public class App
     }
 
     private void issueCommand() {
-        
+        //issuing random commands
+
+        if (commandList.isEmpty()) {
+            System.out.println("There are no commands available to issue");
+            return;
+        }
+        String command = commandList.get(new Random().nextInt(commandList.size()));
+        commandStack.push(command);
+        System.out.println("Issued command: " + command);
+        undoStack.clear();
     }
 
     private void listCommands() {
+        //listing all the commands
+
+        if (commandList.isEmpty()) {
+            System.out.println("The list is empty");
+            return;
+        }
+
+        System.out.println("Here is the list of comamnds: ");
+        for (String command : commandList) {
+            System.out.println(command);
+        }
 
     }
 
     private void undoCommand() {
+        //undoing the last command
 
+        if (commandStack.isEmpty()) {
+            System.out.println("There are no commands to undo");
+            return;
+        }
+
+        String command = commandStack.pop();
+        undoStack.push(command);
+        System.out.println("Undoing >>>> " + command);
     }
 
     private void redoCommand() {
+        //redoing the last command
 
+        if (undoStack.isEmpty()) {
+            System.out.println("There are no commands to redo");
+            return;
+        }
+
+        String command = undoStack.pop();
+        commandStack.push(command);
+        System.out.println("Redoing >>>> " + command);
     }
 
     private void quit() {
@@ -88,6 +126,7 @@ public class App
 
     public static void main( String[] args )
     {
-        
+        App commanderApp = new App();
+        commanderApp.start();
     }
 }
