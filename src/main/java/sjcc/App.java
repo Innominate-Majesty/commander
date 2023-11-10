@@ -43,25 +43,44 @@ public class App
     private void loadCommands(String jsonFilePath) {
 
         JSONParser jsonParser = new JSONParser();
+        InputStream inputStream = null;
 
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(jsonFilePath)) {
+        try {
+            inputStream = getClass().getClassLoader().getResourceAsStream(jsonFilePath);
             if (inputStream == null) {
                 throw new FileNotFoundException("Resource not found: " + jsonFilePath);
             }
 
-            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
-                String jsonData = scanner.useDelimiter("\\A").next();
-                JSONArray commandJsonArray = (JSONArray) jsonParser.parse(jsonData);
+            Scanner userInput = new Scanner (inputStream, StandardCharsets.UTF_8);
+            String jsonData = userInput.useDelimiter("\\A").next();
+            userInput.close();
 
-                for (Object commandObject : commandJsonArray) {
-                    String command = (String) commandObject;
-                    commandList.add(command);
-                }
+            JSONArray commandJsonArray = (JSONArray) jsonParser.parse(jsonData);
+            for (Object commandObject : commandJsonArray) {
+                String command = (String) commandObject;
+                commandList.add(command);
             }
-
-            catch (IOException | ParseException e) {
-                System.err.println("Error loading commands: " + e.getMessage());
-                e.printStackTrace();
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("The file wa nsot found: " + jsonFilePath);
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            System.err.println("An I/O error occurred: " + e.getMessage());
+            e.printStackTrace();
+        }
+        catch (ParseException e) {
+            System.err.println("Parsing error: " + e.getMessage());
+            e.printStackTrace();
+        }
+        finally {
+            if (inputStream != null){
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    System.err.println("Failed to close the input steam: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
     }

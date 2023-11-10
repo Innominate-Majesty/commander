@@ -1,34 +1,38 @@
 package sjcc;
 
-import java.io.*;
-import org.json.simple.*;
-import org.json.simple.parser.*;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 public class JSONFile {
 
   // read a json file and return an array
   public static JSONArray readArray(String fileName) {
-    //
-    // read the birthday.json file and iterate over it
-    //
-
-    // JSON parser object to parse read file
     JSONParser jsonParser = new JSONParser();
 
-    JSONArray data = null;
+    try (FileReader reader = new FileReader(filePath)) {
+      JSONArray commandJsonArray = (JSONArray) jsonParser.parse(reader);
+      for (Object commandObject : commandJsonArray) {
+        String command = (String) commandObject;
+        commandList.add(command);
+      }
 
-    try (FileReader reader = new FileReader(fileName)) {
-      Object obj = jsonParser.parse(reader);
+      catch (FileNotFoundException e) {
+          System.err.println("The file wa nsot found: " + filePath);
+          e.printStackTrace();
+      }
+      catch (IOException e) {
+          System.err.println("An I/O error occurred: " + e.getMessage());
+          e.printStackTrace();
+      }
+      catch (ParseException e) {
+          System.err.println("Parsing error: " + e.getMessage());
+          e.printStackTrace();
+      }
 
-      data = (JSONArray) obj;
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ParseException e) {
-      e.printStackTrace();
     }
-
-    return data;
-  }
+}
 }
