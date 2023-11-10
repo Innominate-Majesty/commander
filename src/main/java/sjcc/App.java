@@ -11,11 +11,11 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-import org.json.simple.JSONArray;
-import org.json.simple.parser.JSONParser;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
+// import org.json.simple.JSONArray;
+// import org.json.simple.parser.JSONParser;
+// import java.io.FileNotFoundException;
+// import java.io.IOException;
+// import java.util.*;
 
 public class App 
 {
@@ -36,10 +36,6 @@ public class App
 
     private void loadCommands(String jsonFilePath) {
 
-        // List<String> commands = JSONFile.readCommands(jsonFilePath);
-        // if (commands != null) {
-        //     commandList.addAll(commands);
-        // }
 
         String absolutePath = "/Users/queen/2023MavenProject/commander/src/main/java/resources/commands.json";
         List<String> commands = JSONFile.readCommands(absolutePath);
@@ -52,6 +48,7 @@ public class App
         Scanner userInput = new Scanner(System.in);
         String input = "";
         while (!input.equals("q")) {
+
             System.out.println("  ");
             System.out.println("****************************************\n");
             System.out.println("         Commanding with Venus   \n");
@@ -62,6 +59,7 @@ public class App
             System.out.println("r    :    [R]edo previous command");
             System.out.println("q    :    [Q]uit\n");
             System.out.println("****************************************\n");
+            System.out.println("Enter your command: ");
 
             input = userInput.nextLine().toLowerCase();
 
@@ -87,7 +85,7 @@ public class App
             }
         }
         userInput.close();
-        System.out.println("Goodbye!");
+        System.out.println("Goodbye, thanks for traing!");
     }
 
     private void issueCommand() {
