@@ -2,7 +2,7 @@ package sjcc;
 
 /**
  * Venus H. 
- * For CIS 54 - Data Structure
+ * For CIS 55 - Data Structure
  *
  */
 
