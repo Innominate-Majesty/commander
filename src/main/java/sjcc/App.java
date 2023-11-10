@@ -32,6 +32,7 @@ public class App
         undoStack = new Stack<>();
         commandList = new ArrayList<>();
         loadCommands("/Users/queen/2023MavenProject/commander/src/main/java/commands.json");
+        System.out.println("Commands...: " + commandList.size());
 
     }
 
@@ -43,6 +44,7 @@ public class App
             for (int i = 0; i < commandsJsonArray.size(); i++) {
                 commandList.add(commandsJsonArray.getString(i));
             }
+            System.out.println("Commands loading....." + commandList);
         }
         catch (Exception e) {
             System.err.println("Error loading ..... " + e.getMessage());
