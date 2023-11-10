@@ -11,14 +11,13 @@ import java.util.Stack;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
-//import javax.json.JSON;
-import javax.json.JsonArray;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.*;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 
 public class App 
 {
@@ -31,26 +30,40 @@ public class App
         commandStack = new Stack<>();
         undoStack = new Stack<>();
         commandList = new ArrayList<>();
-        loadCommands("/Users/queen/2023MavenProject/commander/src/main/java/commands.json");
+        loadCommands("/Users/queen/2023MavenProject/commander/src/main/java/resources/commands.json");
         System.out.println("Commands...: " + commandList.size());
 
     }
 
     private void loadCommands(String jsonFilePath) {
-        try (InputStream fis = new FileInputStream(jsonFilePath);
-            JsonReader reader = Json.createReader(fis)) {
-            JsonObject obj = reader.readObject();
-            JsonArray commandsJsonArray = obj.getJsonArray("commands");
-            for (int i = 0; i < commandsJsonArray.size(); i++) {
-                commandList.add(commandsJsonArray.getString(i));
-            }
-            System.out.println("Commands loading....." + commandList);
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("commands.json");
+        if (inputStream == null) {
+            System.err.println("Could not load the commands, the file was not found!");
+            return;
         }
-        catch (Exception e) {
-            System.err.println("Error loading ..... " + e.getMessage());
+
+        JSONParser jsonParser = new JSONParser();
+
+        try {
+            JSONArray commandJsonArray = (JSONArray) jsonParser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+
+            System.out.println("JSON Array Read: ... " + commandJsonArray.size() + " commands");
+            for (Object commandObject : commandJsonArray) {
+                String command = (String) commandObject;
+                commandList.add(command);
+            }
+            System.out.println("Commands loaded: .... " + commandList.size() + " commands");
+
+        }
+
+        catch (IOException | ParseException e) {
+            System.err.println("Error loading commands: .... " + e.getMessage());
             e.printStackTrace();
         }
+
     }
+
     public void start() {
         Scanner userInput = new Scanner(System.in);
         String input = "";
@@ -97,6 +110,7 @@ public class App
             System.out.println("There are no commands available to issue");
             return;
         }
+        Random rand = new Random();
         String command = commandList.get(new Random().nextInt(commandList.size()));
         commandStack.push(command);
         System.out.println("Issued command: " + command);
