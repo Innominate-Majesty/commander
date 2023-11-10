@@ -13,14 +13,9 @@ import java.util.ArrayList;
 import java.util.Random;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
-
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
+import java.util.*;
 
 public class App 
 {
@@ -36,52 +31,20 @@ public class App
         commandList = new ArrayList<>();
         rand = new Random();
         loadCommands("commands.json");
-        System.out.println("Numbers of Commands: " + commandList.size());
 
     }
 
     private void loadCommands(String jsonFilePath) {
 
-        JSONParser jsonParser = new JSONParser();
-        InputStream inputStream = null;
+        // List<String> commands = JSONFile.readCommands(jsonFilePath);
+        // if (commands != null) {
+        //     commandList.addAll(commands);
+        // }
 
-        try {
-            inputStream = getClass().getClassLoader().getResourceAsStream(jsonFilePath);
-            if (inputStream == null) {
-                throw new FileNotFoundException("Resource not found: " + jsonFilePath);
-            }
-
-            Scanner userInput = new Scanner (inputStream, StandardCharsets.UTF_8);
-            String jsonData = userInput.useDelimiter("\\A").next();
-            userInput.close();
-
-            JSONArray commandJsonArray = (JSONArray) jsonParser.parse(jsonData);
-            for (Object commandObject : commandJsonArray) {
-                String command = (String) commandObject;
-                commandList.add(command);
-            }
-        }
-        catch (FileNotFoundException e) {
-            System.err.println("The file wa nsot found: " + jsonFilePath);
-            e.printStackTrace();
-        }
-        catch (IOException e) {
-            System.err.println("An I/O error occurred: " + e.getMessage());
-            e.printStackTrace();
-        }
-        catch (ParseException e) {
-            System.err.println("Parsing error: " + e.getMessage());
-            e.printStackTrace();
-        }
-        finally {
-            if (inputStream != null){
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    System.err.println("Failed to close the input steam: " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+        String absolutePath = "/Users/queen/2023MavenProject/commander/src/main/java/resources/commands.json";
+        List<String> commands = JSONFile.readCommands(absolutePath);
+        if (commands != null) {
+            commandList.addAll(commands);
         }
     }
 
