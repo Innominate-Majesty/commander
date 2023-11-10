@@ -13,8 +13,11 @@ import java.util.ArrayList;
 import java.util.Random;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.JSONParser;
+
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
@@ -25,57 +28,59 @@ public class App
     private Stack<String> commandStack;
     private Stack<String> undoStack;
     private List<String> commandList;
+    private Random rand;
     
     public App() {
         commandStack = new Stack<>();
         undoStack = new Stack<>();
         commandList = new ArrayList<>();
-        loadCommands("/Users/queen/2023MavenProject/commander/src/main/java/resources/commands.json");
-        System.out.println("Commands...: " + commandList.size());
+        rand = new Random();
+        loadCommands("commands.json");
+        System.out.println("Numbers of Commands: " + commandList.size());
 
     }
 
     private void loadCommands(String jsonFilePath) {
 
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("commands.json");
-        if (inputStream == null) {
-            System.err.println("Could not load the commands, the file was not found!");
-            return;
-        }
-
         JSONParser jsonParser = new JSONParser();
 
-        try {
-            JSONArray commandJsonArray = (JSONArray) jsonParser.parse(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
-
-            System.out.println("JSON Array Read: ... " + commandJsonArray.size() + " commands");
-            for (Object commandObject : commandJsonArray) {
-                String command = (String) commandObject;
-                commandList.add(command);
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(jsonFilePath)) {
+            if (inputStream == null) {
+                throw new FileNotFoundException("Resource not found: " + jsonFilePath);
             }
-            System.out.println("Commands loaded: .... " + commandList.size() + " commands");
 
+            try (Scanner scanner = new Scanner(inputStream, StandardCharsets.UTF_8)) {
+                String jsonData = scanner.useDelimiter("\\A").next();
+                JSONArray commandJsonArray = (JSONArray) jsonParser.parse(jsonData);
+
+                for (Object commandObject : commandJsonArray) {
+                    String command = (String) commandObject;
+                    commandList.add(command);
+                }
+            }
+
+            catch (IOException | ParseException e) {
+                System.err.println("Error loading commands: " + e.getMessage());
+                e.printStackTrace();
+            }
         }
-
-        catch (IOException | ParseException e) {
-            System.err.println("Error loading commands: .... " + e.getMessage());
-            e.printStackTrace();
-        }
-
     }
 
     public void start() {
         Scanner userInput = new Scanner(System.in);
         String input = "";
-        System.out.println("Hello, welcome to Venus' Company");
         while (!input.equals("q")) {
-            System.out.println("\n Menu");
-            System.out.println("[I]ssue a random command");
-            System.out.println("[L]ist all of the commands");
-            System.out.println("[U]undo the last command");
-            System.out.println("[R]edo the last command");
-            System.out.println("[Q]uit");
-            System.out.println("[Enter a command: ");
+            System.out.println("  ");
+            System.out.println("****************************************\n");
+            System.out.println("         Commanding with Venus   \n");
+            System.out.println("****************************************\n");
+            System.out.println("i    :    [I]ssue random commands");
+            System.out.println("l    :    [L]ist all available commands");
+            System.out.println("u    :    [U]ndo previous command");
+            System.out.println("r    :    [R]edo previous command");
+            System.out.println("q    :    [Q]uit\n");
+            System.out.println("****************************************\n");
+
             input = userInput.nextLine().toLowerCase();
 
             switch (input) {
@@ -110,10 +115,12 @@ public class App
             System.out.println("There are no commands available to issue");
             return;
         }
-        Random rand = new Random();
-        String command = commandList.get(new Random().nextInt(commandList.size()));
-        commandStack.push(command);
-        System.out.println("Issued command: " + command);
+        System.out.println("Follow these 5 commands: \n");
+        for(int i = 0; i < 5; i++) {
+            String command = commandList.get(rand.nextInt(commandList.size()));
+            commandStack.push(command);
+            System.out.println(command);
+        }
         undoStack.clear();
     }
 

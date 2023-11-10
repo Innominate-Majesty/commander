@@ -1,3 +1,4 @@
+package sjcc;
 
 import java.io.*;
 import org.json.simple.*;
